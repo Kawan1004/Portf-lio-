@@ -1,0 +1,22 @@
+# build
+dist/
+.astro/
+.vercel/
+
+# deps
+node_modules/
+
+# certificados originais (podem conter CPF/RG) — só versões tratadas vão para src/assets/certificados
+certificados/
+
+# env — nunca versionar segredos
+.env
+.env.*
+!.env.example
+
+# logs / os / editor
+*.log
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea/

@@ -1,0 +1,32 @@
+- id: current
+  order: 1
+  timeline: current
+  org: { pt: Empresa de tecnologia, en: Technology company }
+  role: { pt: Desenvolvedor Full Stack (PJ), en: Full Stack Developer (contractor) }
+  summary:
+    pt: 'Dev principal e product owner de produtos multiplataforma: SaaS multi-tenant de RH e SST, job boards, ecossistemas de benefícios, gestão de vistorias e inspeções, portais de rastreamento logístico e agendamento. Contato direto com clientes para levantar requisitos e validar entregas, com Next.js, React e Node.js, e app publicado na Google Play.'
+    en: 'Lead developer and product owner of cross-platform products: multi-tenant HR and workplace-safety SaaS, job boards, benefits ecosystems, inspection management, logistics tracking portals and scheduling tools. Works directly with clients on requirements and delivery validation, using Next.js, React and Node.js, with an app published on Google Play.'
+- id: internship
+  order: 2
+  timeline: internship
+  org: { pt: Empresa de tecnologia, en: Technology company }
+  role: { pt: Estagiário de desenvolvimento, en: Software development intern }
+  summary:
+    pt: 'Entrada na empresa atual: desenvolvimento web e mobile e integrações REST, com evolução rápida para responsabilidade de ponta a ponta.'
+    en: 'Joined my current company: web and mobile development and REST integrations, quickly growing into end-to-end ownership.'
+- id: freelance
+  order: 3
+  timeline: freelance
+  org: { pt: Autônomo (PJ), en: Self-employed (contractor) }
+  role: { pt: Desenvolvedor Full Stack e Infraestrutura, en: Full Stack and Infrastructure Developer }
+  summary:
+    pt: 'Responsável sozinho pelo ciclo inteiro — desenvolvimento, servidor e segurança. Plataforma de coleta documental por links seguros com RBAC (administrador e operadores), Kanban e lembretes automáticos; deploy e administração do servidor de produção, com hardening via chaves SSH. Também remediação de sites sinalizados pelo Google.'
+    en: 'Solely responsible for the whole cycle — development, server and security. Built a document-collection platform with secure links, RBAC (admin and operators), Kanban tracking and automatic reminders; deployed and ran the production server, hardened with SSH key authentication. Also remediated websites flagged by Google.'
+- id: notary
+  order: 4
+  timeline: notary
+  org: { pt: Cartórios de notas, en: Notary offices }
+  role: { pt: Escrevente, en: Notary clerk }
+  summary:
+    pt: 'Mais de 7 anos em três cartórios: verificação jurídica e auditoria de documentos para prevenir fraudes em reconhecimentos de firma, autenticações, certidões e procurações, além de treinamento de novos colaboradores. Base do meu rigor com dados sensíveis e LGPD.'
+    en: 'Over 7 years across three notary offices: legal verification and document auditing to prevent fraud in signature recognition, certifications, certificates and powers of attorney, plus training new staff. The root of my rigor with sensitive data and privacy.'

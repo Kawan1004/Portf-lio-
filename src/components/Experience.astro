@@ -1,0 +1,268 @@
+---
+import { getCollection } from 'astro:content';
+import Section from './Section.astro';
+import { site } from '@/config/site';
+import type { Lang } from '@/i18n/ui';
+import { formatMonth, useTranslations } from '@/i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const items = (await getCollection('experience')).sort((a, b) => a.data.order - b.data.order);
+
+function period(key: keyof typeof site.timeline): string {
+  const range: { start: string; end?: string } = site.timeline[key];
+  return `${formatMonth(lang, range.start)} – ${range.end ? formatMonth(lang, range.end) : t('experience.present')}`;
+}
+---
+
+<Section id="experiencia" title={t('section.experience')}>
+  <!-- Linha de metrô: o "trem" percorre o trilho com a rolagem e cada estação acende ao ser alcançada. -->
+  <div class="metro" data-metro>
+    <div class="rail" aria-hidden="true">
+      <span class="rail-fill"></span>
+      <span class="train"></span>
+    </div>
+
+    <ol class="stops" role="list">
+      {
+        items.map(({ data }, i) => (
+          <li class:list={['stop', i % 2 === 1 && 'is-alt', i === 0 && 'is-current']} data-stop>
+            <span class="station" aria-hidden="true">
+              <span class="station-core" />
+            </span>
+            <article class="stop-card">
+              <p class="stop-period">
+                {i === 0 && <span class="live-dot" aria-hidden="true" />}
+                {period(data.timeline)}
+              </p>
+              <h3 class="mt-3 text-xl font-semibold tracking-tight sm:text-2xl">{data.role[lang]}</h3>
+              <p class="mt-1 text-fg-muted">{data.org[lang]}</p>
+              <p class="mt-4 leading-relaxed text-fg-muted">{data.summary[lang]}</p>
+            </article>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</Section>
+
+<script>
+  // Progresso do trilho ligado ao scroll: o trem acompanha o centro da tela; estações acendem ao serem alcançadas.
+  document.querySelectorAll<HTMLElement>('[data-metro]').forEach((metro) => {
+    const stops = Array.from(metro.querySelectorAll<HTMLElement>('[data-stop]'));
+    let frame = 0;
+    const sync = () => {
+      const r = metro.getBoundingClientRect();
+      const line = innerHeight * 0.55;
+      const p = Math.min(1, Math.max(0, (line - r.top) / r.height));
+      metro.style.setProperty('--p', p.toFixed(4));
+      stops.forEach((s) => {
+        const station = s.querySelector<HTMLElement>('.station');
+        if (!station) return;
+        const sr = station.getBoundingClientRect();
+        s.classList.toggle('is-reached', sr.top + sr.height / 2 <= line);
+      });
+    };
+    addEventListener(
+      'scroll',
+      () => {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(sync);
+      },
+      { passive: true },
+    );
+    addEventListener('resize', sync);
+    sync();
+  });
+</script>
+
+<style>
+  .metro {
+    --p: 0;
+    --rail-x: 1.25rem;
+    position: relative;
+  }
+  @media (min-width: 1024px) {
+    .metro {
+      --rail-x: 50%;
+    }
+  }
+
+  /* Trilho */
+  .rail {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--rail-x);
+    width: 4px;
+    translate: -50% 0;
+    border-radius: 999px;
+    background: var(--border-strong);
+  }
+  .rail-fill {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    transform-origin: top;
+    transform: scaleY(var(--p));
+    background: linear-gradient(to bottom, var(--accent), #6366f1);
+    box-shadow: 0 0 14px color-mix(in oklab, var(--accent) 60%, transparent);
+  }
+  /* Trem: brilho na ponta do trecho percorrido */
+  .train {
+    position: absolute;
+    left: 50%;
+    top: calc(var(--p) * 100%);
+    width: 1.1rem;
+    height: 2.4rem;
+    translate: -50% -100%;
+    border-radius: 999px;
+    background: linear-gradient(to bottom, transparent, #fff 55%, #fff);
+    box-shadow:
+      0 0 12px 3px color-mix(in oklab, var(--accent) 80%, transparent),
+      0 0 40px 10px color-mix(in oklab, var(--accent) 35%, transparent);
+    opacity: calc(min(var(--p) * 20, 1));
+  }
+
+  /* Estações */
+  .stops {
+    display: grid;
+    gap: 3.5rem;
+    padding-block: 1rem;
+  }
+  .stop {
+    position: relative;
+    padding-left: calc(var(--rail-x) + 2rem);
+  }
+  @media (min-width: 1024px) {
+    .stops {
+      gap: 1rem;
+    }
+    .stop {
+      width: 50%;
+      padding-left: 0;
+      padding-right: 3.5rem;
+    }
+    .stop.is-alt {
+      margin-left: 50%;
+      padding-left: 3.5rem;
+      padding-right: 0;
+    }
+  }
+  .station {
+    position: absolute;
+    top: 1.6rem;
+    left: var(--rail-x);
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    translate: -50% 0;
+    border-radius: 999px;
+    border: 3px solid var(--border-strong);
+    background: var(--bg);
+    transition:
+      border-color 0.5s,
+      box-shadow 0.5s,
+      scale 0.5s var(--ease-spring);
+  }
+  @media (min-width: 1024px) {
+    .station {
+      left: auto;
+      right: 0;
+      translate: 50% 0;
+    }
+    .stop.is-alt .station {
+      left: 0;
+      right: auto;
+      translate: -50% 0;
+    }
+  }
+  .station-core {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--border-strong);
+    transition: background-color 0.5s;
+  }
+  .stop.is-reached .station {
+    scale: 1.15;
+    border-color: var(--accent);
+    box-shadow:
+      0 0 0 6px var(--accent-soft),
+      0 0 22px color-mix(in oklab, var(--accent) 50%, transparent);
+  }
+  .stop.is-reached .station-core {
+    background: var(--accent);
+  }
+
+  /* Cards: chegam da lateral quando o trem alcança a estação */
+  .stop-card {
+    padding: 1.6rem 1.75rem;
+    border-radius: 1.5rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: 0 24px 50px -38px rgb(0 0 0 / 0.4);
+    opacity: 0.45;
+    translate: 0 16px;
+    transition:
+      opacity 0.7s var(--ease-out-soft),
+      translate 0.7s var(--ease-out-soft),
+      border-color 0.5s,
+      box-shadow 0.5s;
+  }
+  @media (min-width: 1024px) {
+    .stop .stop-card {
+      translate: -24px 0;
+    }
+    .stop.is-alt .stop-card {
+      translate: 24px 0;
+    }
+  }
+  .stop.is-reached .stop-card {
+    opacity: 1;
+    translate: 0 0;
+    border-color: color-mix(in oklab, var(--accent) 30%, var(--border));
+    box-shadow: 0 30px 60px -40px color-mix(in oklab, var(--accent) 50%, rgb(0 0 0 / 0.4));
+  }
+  .stop.is-current .stop-card {
+    background:
+      radial-gradient(90% 120% at 100% 0%, var(--accent-soft), transparent 60%),
+      var(--surface);
+  }
+  .stop-period {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    background: var(--surface-muted);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--fg-muted);
+  }
+  .live-dot {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 999px;
+    background: #10b981;
+    box-shadow: 0 0 0 3px rgb(16 185 129 / 0.2);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stop-card,
+    .stop .stop-card,
+    .stop.is-alt .stop-card {
+      opacity: 1;
+      translate: 0 0;
+      transition: none;
+    }
+    .station {
+      transition: none;
+    }
+  }
+</style>

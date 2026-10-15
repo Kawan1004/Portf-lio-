@@ -1,0 +1,47 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = Omit<HTMLAttributes<'a'>, 'type'> & {
+  type?: 'button' | 'submit';
+  href?: string;
+  variant?: 'primary' | 'ghost';
+  size?: 'md' | 'lg';
+  arrow?: boolean;
+  magnetic?: boolean;
+};
+
+const { href, type, variant = 'primary', size = 'md', arrow = false, magnetic = false, class: className, ...rest } = Astro.props;
+const Tag = href ? 'a' : 'button';
+
+const classes = [
+  'group/btn relative inline-flex cursor-pointer items-center justify-center gap-3 rounded-full font-medium select-none',
+  'transition-[transform,background-color,border-color,box-shadow] duration-300 ease-(--ease-out-soft) active:scale-[0.97]',
+  size === 'lg' ? 'h-14 text-base' : 'h-12 text-sm',
+  arrow ? (size === 'lg' ? 'pr-2 pl-7' : 'pr-1.5 pl-6') : size === 'lg' ? 'px-8' : 'px-6',
+  variant === 'primary'
+    ? 'bg-fg text-bg shadow-[0_10px_30px_-12px_rgb(0_0_0/0.5)] hover:shadow-[0_16px_40px_-12px_rgb(0_0_0/0.55)]'
+    : 'border border-border bg-surface-muted/70 text-fg glass hover:border-border-strong hover:bg-surface-muted',
+  className,
+];
+---
+
+<Tag href={href} type={href ? undefined : (type ?? 'button')} class:list={classes} data-magnetic={magnetic ? '' : undefined} {...rest}>
+  <span class="relative inline-flex items-center gap-3" data-magnetic-inner>
+    <slot />
+    {
+      arrow && (
+        <span
+          class:list={[
+            'inline-flex items-center justify-center rounded-full bg-bg text-fg transition-transform duration-500 ease-(--ease-out-soft) group-hover/btn:-rotate-45',
+            size === 'lg' ? 'size-10' : 'size-9',
+          ]}
+          aria-hidden="true"
+        >
+          <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </span>
+      )
+    }
+  </span>
+</Tag>

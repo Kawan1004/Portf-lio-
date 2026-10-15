@@ -1,0 +1,20 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { useTranslations } from '@/i18n/utils';
+
+// Página única para os dois idiomas.
+const pt = useTranslations('pt');
+const en = useTranslations('en');
+---
+
+<BaseLayout title="404">
+  <section class="container-page py-28 sm:py-40">
+    <p class="text-sm text-fg-muted">404</p>
+    <h1 class="mt-2 text-4xl font-semibold sm:text-5xl">{pt('notFound.title')}</h1>
+    <p class="mt-4 text-lg text-fg-muted" lang="en">{en('notFound.title')}</p>
+    <div class="mt-10 flex flex-wrap gap-3">
+      <a href="/" class="inline-flex h-12 items-center rounded-full bg-fg px-6 text-sm font-medium text-bg hover:opacity-85">{pt('notFound.cta')}</a>
+      <a href="/en" lang="en" class="inline-flex h-12 items-center rounded-full border border-border px-6 text-sm font-medium hover:border-fg">{en('notFound.cta')}</a>
+    </div>
+  </section>
+</BaseLayout>

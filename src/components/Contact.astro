@@ -1,0 +1,377 @@
+---
+import { Image as AvatarImage } from 'astro:assets';
+import avatar from '@/assets/avatar.jpg';
+import Icon from './Icon.astro';
+import { site } from '@/config/site';
+import type { Lang } from '@/i18n/ui';
+import { useTranslations } from '@/i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Abre a tela de novo e-mail do Gmail com o destinatário já preenchido.
+const gmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(site.email)}`;
+
+// Ícones oficiais (preenchidos); só o símbolo aparece, o nome fica no aria-label.
+const socials = [
+  {
+    href: site.social.linkedin,
+    label: t('contact.social.linkedin'),
+    path: 'M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z',
+  },
+  {
+    href: site.social.github,
+    label: t('contact.social.github'),
+    path: 'M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.3-3.1-.2-.4-.6-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.7 1.6.3 2.8.1 3.2.8.8 1.3 1.9 1.3 3.1 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3',
+  },
+];
+---
+
+<section id="contato" aria-labelledby="contato-title" class="contact relative isolate flex min-h-[calc(100svh-4rem)] scroll-mt-16 items-center overflow-hidden">
+  <div class="contact-glow pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
+
+  <div class="container-page grid items-center gap-12 py-14 sm:py-16 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:gap-16">
+    <div>
+      <p class="pill" data-reveal>
+        <span class="relative flex size-2" aria-hidden="true">
+          <span class="absolute inset-0 animate-ping rounded-full bg-emerald-500/60"></span>
+          <span class="relative size-2 rounded-full bg-emerald-500"></span>
+        </span>
+        {t('contact.available')}
+      </p>
+
+      <h2 id="contato-title" class="contact-title mt-6" data-reveal>{t('section.contact')}</h2>
+      <p class="mt-5 max-w-lg text-lg text-fg-muted" data-reveal>{t('contact.lead')}</p>
+
+      <!-- E-mail: ação principal -->
+      <div class="mt-9" data-reveal>
+        <p class="text-sm text-fg-muted">{t('contact.emailLabel')}</p>
+        <div class="mt-3 flex items-center gap-2 sm:gap-3">
+          <a href={gmail} target="_blank" rel="noopener" class="email-card" aria-label={t('contact.openGmail')}>
+            <span class="email-icon" aria-hidden="true"><Icon name="mail" class="size-5" /></span>
+            <span class="email-text">{site.email}</span>
+            <Icon name="arrowRight" class="email-arrow" />
+          </a>
+          <button type="button" class="copy-btn" data-copy={site.email} data-copied-label={t('contact.copied')} aria-label={t('contact.copy')}>
+            <Icon name="copy" class="size-4 copy-icon" />
+            <Icon name="check" class="size-4 check-icon" />
+          </button>
+          <span class="sr-only" aria-live="polite" data-copy-status></span>
+        </div>
+        <p class="mt-3 text-xs text-fg-muted">{t('contact.emailHint')}</p>
+      </div>
+
+      <div class="mt-8 flex items-center gap-3" data-reveal>
+        {
+          socials.map((s) => (
+            <a href={s.href} target="_blank" rel="me noopener" class="social" aria-label={s.label}>
+              <svg class="size-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d={s.path} />
+              </svg>
+            </a>
+          ))
+        }
+        <span class="ml-3 hidden text-sm text-fg-muted sm:inline">{t('contact.where')}</span>
+      </div>
+    </div>
+
+    <!-- Ilustração: órbita de canais ao redor das iniciais -->
+    <div class="orbit-wrap" aria-hidden="true" data-reveal>
+      <div class="orbit orbit-1"><span class="sat"><Icon name="mail" class="size-5" /></span></div>
+      <div class="orbit orbit-2">
+        <span class="sat">
+          <svg class="size-5" viewBox="0 0 24 24" fill="currentColor"><path d={socials[0]?.path} /></svg>
+        </span>
+      </div>
+      <div class="orbit orbit-3">
+        <span class="sat">
+          <svg class="size-5" viewBox="0 0 24 24" fill="currentColor"><path d={socials[1]?.path} /></svg>
+        </span>
+      </div>
+      <div class="core">
+        <span class="core-ring"></span>
+        <AvatarImage src={avatar} alt="" width={240} height={240} class="core-badge" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Copiar e-mail com confirmação visual e anúncio para leitor de tela.
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
+    const status = btn.parentElement?.querySelector<HTMLElement>('[data-copy-status]');
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset['copy'] ?? '');
+      } catch {
+        return;
+      }
+      btn.classList.add('is-copied');
+      if (status) status.textContent = btn.dataset['copiedLabel'] ?? '';
+      setTimeout(() => btn.classList.remove('is-copied'), 2000);
+    });
+  });
+</script>
+
+<style>
+  .contact-glow {
+    background:
+      radial-gradient(40% 55% at 85% 50%, var(--accent-soft), transparent 70%),
+      radial-gradient(35% 45% at 10% 100%, rgb(129 140 248 / 0.08), transparent 70%);
+  }
+
+  .pill {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 0.875rem;
+    color: var(--fg-muted);
+  }
+
+  .contact-title {
+    font-size: clamp(2.5rem, 1.3rem + 3.8vw, 4.75rem);
+    font-weight: 600;
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+    background: linear-gradient(110deg, var(--fg) 35%, var(--accent) 50%, var(--fg) 65%);
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .contact-title {
+      animation: shine 6s ease-in-out infinite;
+    }
+  }
+  @keyframes shine {
+    0%, 100% { background-position: 100% 0; }
+    50% { background-position: 0% 0; }
+  }
+
+  /* Card do e-mail */
+  .email-card {
+    display: inline-flex;
+    min-width: 0;
+    flex: 0 1 auto;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.75rem;
+    border-radius: 1.25rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: 0 20px 45px -30px rgb(0 0 0 / 0.35);
+    transition:
+      translate 0.4s var(--ease-out-soft),
+      border-color 0.3s,
+      box-shadow 0.4s var(--ease-out-soft);
+  }
+  .email-card:hover {
+    translate: 0 -3px;
+    border-color: var(--accent);
+    box-shadow: 0 28px 55px -30px color-mix(in oklab, var(--accent) 55%, rgb(0 0 0 / 0.4));
+  }
+  @media (max-width: 479px) {
+    .email-icon {
+      display: none !important;
+    }
+    .email-card {
+      padding-left: 1.1rem;
+    }
+  }
+  .email-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.85rem;
+    background: var(--fg);
+    color: var(--bg);
+  }
+  .email-text {
+    min-width: 0;
+    font-size: clamp(0.92rem, 0.7rem + 1.1vw, 1.45rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    background: linear-gradient(currentColor, currentColor) left bottom / 0 1.5px no-repeat;
+    transition: background-size 0.5s var(--ease-out-soft);
+  }
+  .email-card:hover .email-text {
+    background-size: 100% 1.5px;
+  }
+  .email-card :global(.email-arrow) {
+    width: 2.25rem;
+    height: 2.25rem;
+    flex-shrink: 0;
+    padding: 0.5rem;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    transition: rotate 0.5s var(--ease-out-soft);
+  }
+  .email-card:hover :global(.email-arrow) {
+    rotate: -45deg;
+  }
+
+  .copy-btn {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 3.25rem;
+    height: 3.25rem;
+    cursor: pointer;
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--fg-muted);
+    transition:
+      color 0.3s,
+      border-color 0.3s;
+  }
+  .copy-btn:hover {
+    color: var(--fg);
+    border-color: var(--border-strong);
+  }
+  .copy-btn :global(.copy-icon),
+  .copy-btn :global(.check-icon) {
+    grid-area: 1 / 1;
+    transition:
+      opacity 0.25s,
+      scale 0.25s;
+  }
+  .copy-btn :global(.check-icon) {
+    opacity: 0;
+    scale: 0.6;
+    color: #059669;
+  }
+  .copy-btn.is-copied :global(.copy-icon) {
+    opacity: 0;
+    scale: 0.6;
+  }
+  .copy-btn.is-copied :global(.check-icon) {
+    opacity: 1;
+    scale: 1;
+  }
+
+  .social {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--fg);
+    transition:
+      color 0.3s,
+      background-color 0.3s,
+      translate 0.3s var(--ease-out-soft);
+  }
+  .social:hover {
+    translate: 0 -3px;
+    background: var(--fg);
+    color: var(--bg);
+  }
+  .social:focus-visible,
+  .copy-btn:focus-visible,
+  .email-card:focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 3px;
+  }
+
+  /* Órbita decorativa */
+  .orbit-wrap {
+    position: relative;
+    width: min(100%, 24rem);
+    aspect-ratio: 1;
+    margin-inline: auto;
+  }
+  .orbit {
+    position: absolute;
+    inset: var(--inset);
+    border-radius: 999px;
+    border: 1px dashed var(--border-strong);
+  }
+  .orbit-1 { --inset: 0%; --dur: 26s; }
+  .orbit-2 { --inset: 15%; --dur: 20s; rotate: 120deg; }
+  .orbit-3 { --inset: 28%; --dur: 15s; rotate: 240deg; }
+  .sat {
+    position: absolute;
+    top: -1.5rem;
+    left: 50%;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    margin-left: -1.5rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--fg);
+    box-shadow: 0 12px 30px -14px rgb(0 0 0 / 0.35);
+  }
+  .orbit-2 .sat { color: #0a66c2; rotate: -120deg; }
+  .orbit-3 .sat { rotate: -240deg; }
+  .core {
+    position: absolute;
+    inset: 38.5%;
+    display: grid;
+    place-items: center;
+  }
+  .core-ring {
+    position: absolute;
+    inset: -30%;
+    border-radius: 999px;
+    background: radial-gradient(closest-side, var(--accent-soft), transparent);
+  }
+  .core :global(.core-badge) {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 999px;
+    object-fit: cover;
+    border: 4px solid var(--surface);
+    box-shadow:
+      0 0 0 1px var(--border),
+      0 25px 50px -20px rgb(0 0 0 / 0.5);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .orbit {
+      animation: spin var(--dur) linear infinite;
+    }
+    .orbit-2 {
+      animation-direction: reverse;
+    }
+    /* Satélites giram ao contrário da órbita para ficarem sempre na vertical. */
+    .sat {
+      animation: spin var(--dur) linear infinite reverse;
+    }
+    .orbit-2 .sat {
+      animation-direction: normal;
+    }
+    .core-ring {
+      animation: breathe 4s ease-in-out infinite;
+    }
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes breathe {
+    50% { transform: scale(1.15); opacity: 0.6; }
+  }
+  @media (max-width: 1023px) {
+    .orbit-wrap {
+      width: min(80%, 20rem);
+    }
+  }
+</style>

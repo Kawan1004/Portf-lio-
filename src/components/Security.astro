@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import Section from './Section.astro';
+import type { Lang } from '@/i18n/ui';
+import { useTranslations } from '@/i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const practices = (await getCollection('security')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<Section id="seguranca" title={t('section.security')} lead={t('security.lead')}>
+  <ul class="grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2">
+    {
+      practices.map(({ data }) => (
+        <li class="bg-bg p-6" data-reveal>
+          <svg class="mb-4 size-5 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z" />
+            <path d="M9 12l2 2 4-4" />
+          </svg>
+          <h3 class="font-medium">{data.title[lang]}</h3>
+          <p class="mt-1.5 text-sm text-fg-muted">{data.detail[lang]}</p>
+        </li>
+      ))
+    }
+  </ul>
+</Section>

@@ -1,0 +1,32 @@
+- id: frontend
+  order: 1
+  group: { pt: Frontend, en: Frontend }
+  items: [Next.js, React, TypeScript, JavaScript, HTML5, CSS3, Tailwind CSS, Astro, Vite]
+- id: backend
+  order: 2
+  group: { pt: Backend, en: Backend }
+  items: [Node.js, Express, REST APIs, JWT, RBAC, Kanban workflows]
+- id: database
+  order: 3
+  group: { pt: Banco de dados, en: Databases }
+  items: [PostgreSQL, SQL Server, SQLite (WAL), Data modeling, Stored procedures]
+- id: ai
+  order: 4
+  group: { pt: IA aplicada, en: Applied AI }
+  items: [Claude Code, Claude API, MCP, Agent Skills, Subagents, Amazon Bedrock, Google Vertex AI, Cursor, GitHub Copilot]
+- id: mobile
+  order: 5
+  group: { pt: Mobile e desktop, en: Mobile & desktop }
+  items: [Capacitor, Android, iOS, Google Play, Gamification]
+- id: security
+  order: 6
+  group: { pt: Segurança, en: Security }
+  items: [AES-256-GCM, LGPD, OWASP Top 10, Rate limiting, Audit logs, Hardening SSH]
+- id: integrations
+  order: 7
+  group: { pt: Integrações, en: Integrations }
+  items: [REST, Webhooks, ERP via SQL Server, Playwright (RPA), Resend]
+- id: devops
+  order: 8
+  group: { pt: DevOps, en: DevOps }
+  items: [Linux, Git, GitHub, CI/CD, SSH, Server administration, Vercel]

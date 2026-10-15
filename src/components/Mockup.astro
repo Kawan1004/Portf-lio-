@@ -1,0 +1,225 @@
+---
+// Ilustrações de interface com dados 100% fictícios.
+import type { Lang } from '@/i18n/ui';
+import type { Project } from '@/lib/projects';
+import CarView from './CarView.astro';
+
+const carViews = ['front', 'rear', 'left', 'right', 'dashboard', 'engine'] as const;
+
+interface Props {
+  variant: Project['data']['mockup'];
+  lang: Lang;
+  label: string;
+}
+const { variant, lang, label } = Astro.props;
+
+const copy = {
+  pt: {
+    engagement: { title: 'Pontos', balance: 'Saldo', chart: 'Engajamento por mês', rows: [['Meta de vendas', '+50'], ['Treinamento concluído', '+20'], ['Resgate · vale-cultura', '−300']], kanon: 'Relatório anônimo · k ≥ 5' },
+    inspection: { title: 'Vistoria', plate: 'BRA2E19', items: [['Chassi legível', 'ok'], ['Faróis e lanternas', 'ok'], ['Pneus', 'warn'], ['Vidros', 'ok']], cta: 'Gerar laudo PDF', sync: 'Sincronizado com ERP' },
+    commissions: { title: 'Comissões', cols: ['Venda', 'Valor', 'Comissão', 'Status'], rows: [['#1042', 'R$ 8.400', 'R$ 420', 'Pago'], ['#1043', 'R$ 3.150', 'R$ 157', 'Parcial'], ['#1047', 'R$ 5.900', 'R$ 295', 'Aberto']], rule: 'Regra congelada: 5% em 12/03' },
+    survey: { title: 'Vistoria veicular', photos: 'Fotos', items: ['Frente', 'Traseira', 'Lateral esq.', 'Lateral dir.', 'Painel', 'Motor'], status: 'Rascunho' },
+    jobs: { title: 'Dev Backend Pleno', company: 'Empresa fictícia', steps: ['Inscrito', 'Triagem', 'Entrevista', 'Proposta'], msgs: [['r', 'Oi, Ana! Podemos marcar a entrevista para quinta?'], ['c', 'Claro, quinta às 10h funciona.']] },
+    documents: { title: 'Documentos solicitados', expires: 'Link expira em 48 h · uso único', items: [['RG ou CNH', 'ok'], ['Comprovante de residência', 'ok'], ['Contrato assinado', 'wait']], received: 'Recebido', pending: 'Pendente' },
+    agenda: { title: 'Agenda · quinta', items: [['09:00', 'Reunião com diretoria', 'sent'], ['11:30', 'Visita ao cliente', 'queued'], ['15:00', 'Revisão de contratos', 'queued']], sent: 'Lembrete enviado', queued: 'Na fila' },
+    remediation: { title: 'Relatório de incidente', status: 'Navegação segura restaurada', steps: [['09:12', 'Alerta recebido'], ['11:40', 'Causa raiz identificada'], ['14:05', 'Limpeza e hardening'], ['15:30', 'Revisão solicitada']] },
+  },
+  en: {
+    engagement: { title: 'Points', balance: 'Balance', chart: 'Engagement per month', rows: [['Sales goal', '+50'], ['Training completed', '+20'], ['Reward · culture voucher', '−300']], kanon: 'Anonymous report · k ≥ 5' },
+    inspection: { title: 'Inspection', plate: 'BRA2E19', items: [['Readable VIN', 'ok'], ['Headlights', 'ok'], ['Tires', 'warn'], ['Windows', 'ok']], cta: 'Generate PDF report', sync: 'Synced with ERP' },
+    commissions: { title: 'Commissions', cols: ['Sale', 'Amount', 'Commission', 'Status'], rows: [['#1042', '$8,400', '$420', 'Paid'], ['#1043', '$3,150', '$157', 'Partial'], ['#1047', '$5,900', '$295', 'Open']], rule: 'Rule frozen: 5% on Mar 12' },
+    survey: { title: 'Vehicle survey', photos: 'Photos', items: ['Front', 'Rear', 'Left side', 'Right side', 'Dashboard', 'Engine'], status: 'Draft' },
+    jobs: { title: 'Mid-level Backend Dev', company: 'Fictitious company', steps: ['Applied', 'Screening', 'Interview', 'Offer'], msgs: [['r', 'Hi Ana! Could we schedule the interview for Thursday?'], ['c', 'Sure, Thursday at 10 works.']] },
+    documents: { title: 'Requested documents', expires: 'Link expires in 48 h · single use', items: [['ID card', 'ok'], ['Proof of address', 'ok'], ['Signed contract', 'wait']], received: 'Received', pending: 'Pending' },
+    agenda: { title: 'Calendar · Thursday', items: [['09:00', 'Board meeting', 'sent'], ['11:30', 'Client visit', 'queued'], ['15:00', 'Contract review', 'queued']], sent: 'Reminder sent', queued: 'Queued' },
+    remediation: { title: 'Incident report', status: 'Safe browsing restored', steps: [['09:12', 'Alert received'], ['11:40', 'Root cause found'], ['14:05', 'Cleanup and hardening'], ['15:30', 'Review requested']] },
+  },
+}[lang];
+
+// Classes estáticas (não style inline) para respeitar a CSP.
+const bars = ['h-[38%]', 'h-[52%]', 'h-[47%]', 'h-[64%]', 'h-[71%]', 'h-[83%]'];
+const statusTone = ['bg-accent-soft text-accent', 'bg-fg-muted/15 text-fg', 'bg-surface-muted text-fg-muted'];
+---
+
+<figure role="img" aria-label={label} class="overflow-hidden rounded-2xl border border-border bg-surface shadow-[0_1px_0_0_var(--border)]">
+  <div aria-hidden="true" class="pointer-events-none select-none">
+    <div class="flex items-center gap-1.5 border-b border-border px-4 py-3">
+      <span class="size-2.5 rounded-full bg-border"></span>
+      <span class="size-2.5 rounded-full bg-border"></span>
+      <span class="size-2.5 rounded-full bg-border"></span>
+    </div>
+    <div class="p-5 text-sm sm:p-6">
+      {
+        variant === 'engagement' && (
+          <div class="grid gap-5 sm:grid-cols-2">
+            <div>
+              <p class="text-fg-muted">{copy.engagement.balance}</p>
+              <p class="text-3xl font-semibold tabular-nums">12.480</p>
+              <ul class="mt-4 divide-y divide-border">
+                {copy.engagement.rows.map(([k, v]) => (
+                  <li class="flex justify-between py-2">
+                    <span class="text-fg-muted">{k}</span>
+                    <span class:list={['tabular-nums', v?.startsWith('+') && 'text-accent']}>{v}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div class="flex flex-col">
+              <p class="text-fg-muted">{copy.engagement.chart}</p>
+              <div class="mt-3 flex h-32 flex-1 items-end gap-2">
+                {bars.map((h, i) => (
+                  <span class:list={['flex-1 rounded-t', h, i === bars.length - 1 ? 'bg-accent' : 'bg-surface-muted']} />
+                ))}
+              </div>
+              <p class="mt-3 text-xs text-fg-muted">{copy.engagement.kanon}</p>
+            </div>
+          </div>
+        )
+      }
+      {
+        variant === 'inspection' && (
+          <div>
+            <div class="flex items-center justify-between">
+              <p class="font-medium">{copy.inspection.title}</p>
+              <span class="rounded border border-fg-muted/40 px-2 py-0.5 font-mono text-xs tracking-wider">{copy.inspection.plate}</span>
+            </div>
+            <ul class="mt-4 space-y-2">
+              {copy.inspection.items.map(([k, s]) => (
+                <li class="flex items-center gap-3 rounded-lg bg-surface-muted px-3 py-2">
+                  <span class:list={['size-2 rounded-full', s === 'ok' ? 'bg-accent' : 'bg-amber-500']} />
+                  <span class="flex-1">{k}</span>
+                </li>
+              ))}
+            </ul>
+            <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+              <span class="text-xs text-fg-muted">{copy.inspection.sync}</span>
+              <span class="rounded-full bg-fg px-4 py-2 text-xs font-medium text-bg">{copy.inspection.cta}</span>
+            </div>
+          </div>
+        )
+      }
+      {
+        variant === 'commissions' && (
+          <div>
+            <p class="font-medium">{copy.commissions.title}</p>
+            <table class="mt-4 w-full text-left">
+              <thead class="text-xs text-fg-muted">
+                <tr>{copy.commissions.cols.map((c) => <th class="pb-2 font-normal">{c}</th>)}</tr>
+              </thead>
+              <tbody class="divide-y divide-border tabular-nums">
+                {copy.commissions.rows.map((r, i) => (
+                  <tr>
+                    <td class="py-2">{r[0]}</td>
+                    <td class="py-2">{r[1]}</td>
+                    <td class="py-2">{r[2]}</td>
+                    <td class="py-2">
+                      <span class:list={['rounded-full px-2 py-0.5 text-xs', statusTone[i]]}>{r[3]}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <p class="mt-4 text-xs text-fg-muted">{copy.commissions.rule}</p>
+          </div>
+        )
+      }
+      {
+        variant === 'survey' && (
+          <div>
+            <div class="flex items-center justify-between">
+              <p class="font-medium">{copy.survey.title}</p>
+              <span class="rounded-full bg-surface-muted px-2 py-0.5 text-xs text-fg-muted">{copy.survey.status}</span>
+            </div>
+            <p class="mt-4 text-xs text-fg-muted">{copy.survey.photos}</p>
+            <ul class="mt-2 grid grid-cols-3 gap-2">
+              {copy.survey.items.map((k, i) => (
+                <li class="relative aspect-[4/3] overflow-hidden rounded-lg">
+                  <CarView view={carViews[i] ?? 'front'} />
+                  <span class="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/60 to-transparent px-2 pt-4 pb-1.5 text-[0.65rem] font-medium text-white">{k}</span>
+                  <span class="absolute top-1.5 right-1.5 grid size-4 place-items-center rounded-full bg-emerald-500 text-white">
+                    <svg class="size-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4.5 4.5L19 7" /></svg>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+      {
+        variant === 'jobs' && (
+          <div>
+            <p class="font-medium">{copy.jobs.title}</p>
+            <p class="text-xs text-fg-muted">{copy.jobs.company}</p>
+            <ol class="mt-4 grid grid-cols-4 gap-1.5 text-center text-xs">
+              {copy.jobs.steps.map((st, i) => (
+                <li>
+                  <span class:list={['block h-1 rounded-full', i <= 2 ? 'bg-accent' : 'bg-surface-muted']} />
+                  <span class:list={['mt-1.5 block', i === 2 ? 'text-fg' : 'text-fg-muted']}>{st}</span>
+                </li>
+              ))}
+            </ol>
+            <div class="mt-5 space-y-2">
+              {copy.jobs.msgs.map(([who, m]) => (
+                <p class:list={['w-fit max-w-[85%] rounded-2xl px-3 py-2 text-xs', who === 'c' ? 'ml-auto bg-accent text-accent-fg' : 'bg-surface-muted']}>{m}</p>
+              ))}
+            </div>
+          </div>
+        )
+      }
+      {
+        variant === 'documents' && (
+          <div>
+            <p class="font-medium">{copy.documents.title}</p>
+            <p class="mt-1 text-xs text-fg-muted">{copy.documents.expires}</p>
+            <ul class="mt-4 divide-y divide-border">
+              {copy.documents.items.map(([k, s]) => (
+                <li class="flex items-center justify-between gap-3 py-2.5">
+                  <span>{k}</span>
+                  <span class:list={['rounded-full px-2 py-0.5 text-xs', s === 'ok' ? 'bg-accent-soft text-accent' : 'bg-surface-muted text-fg-muted']}>
+                    {s === 'ok' ? copy.documents.received : copy.documents.pending}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+      {
+        variant === 'agenda' && (
+          <div>
+            <p class="font-medium">{copy.agenda.title}</p>
+            <ul class="mt-4 space-y-2">
+              {copy.agenda.items.map(([time, what, s]) => (
+                <li class="flex items-center gap-3 rounded-lg bg-surface-muted px-3 py-2.5">
+                  <span class="font-mono text-xs text-fg-muted">{time}</span>
+                  <span class="flex-1">{what}</span>
+                  <span class:list={['text-xs', s === 'sent' ? 'text-accent' : 'text-fg-muted']}>{s === 'sent' ? copy.agenda.sent : copy.agenda.queued}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+      {
+        variant === 'remediation' && (
+          <div>
+            <p class="font-medium">{copy.remediation.title}</p>
+            <ol class="mt-4 space-y-3 border-l border-border pl-5">
+              {copy.remediation.steps.map(([time, step]) => (
+                <li class="relative">
+                  <span class="absolute top-1.5 -left-[1.6rem] size-2 rounded-full bg-fg-muted/60" />
+                  <span class="mr-3 font-mono text-xs text-fg-muted">{time}</span>
+                  {step}
+                </li>
+              ))}
+            </ol>
+            <p class="mt-5 inline-flex items-center gap-2 rounded-full bg-accent-soft px-3 py-1 text-xs font-medium text-accent">
+              <span class="size-1.5 rounded-full bg-accent" />
+              {copy.remediation.status}
+            </p>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</figure>

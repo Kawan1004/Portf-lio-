@@ -1,0 +1,270 @@
+# Ordem: primeiro Anthropic, depois as demais instituições; dentro de cada grupo, sequência de cores
+# (claros → intermediários → azuis → verdes). Só entram certificados com imagem.
+# Fundação Bradesco, APDADOS e Instituto Academia das IAs: imagens enviadas pelo autor, conferidas (sem CPF/RG).
+# Anthropic Academy: imagem e link oficiais (verify.skilljar.com). Imagens conferidas: só nome e curso, sem dados pessoais.
+- id: claude-101
+  order: 1
+  title: 'Claude 101'
+  issuer: 'Anthropic Academy'
+  category: IA
+  status: concluido
+  color: '#e3dacb'
+  credentialUrl: https://verify.skilljar.com/c/wwsuy3jcakcc
+  image: ../../assets/certificados/claude-101.jpg
+- id: mcp-avancado
+  order: 2
+  title: 'MCP: Tópicos Avançados'
+  issuer: 'Anthropic Academy'
+  category: IA
+  status: concluido
+  color: '#cbcada'
+  credentialUrl: https://verify.skilljar.com/c/eg5he8in9mxg
+  image: ../../assets/certificados/mcp-avancado.jpg
+  highlight: true
+- id: enterprise
+  order: 3
+  title: 'Implantando o Claude Enterprise com Confiança'
+  issuer: 'Anthropic Academy'
+  category: IA
+  status: concluido
+  color: '#cbcada'
+  credentialUrl: https://verify.skilljar.com/c/8a6y2x8egdji
+  image: ../../assets/certificados/enterprise.jpg
+- id: cowork
+  order: 4
+  title: 'Introdução ao Claude Cowork'
+  issuer: 'Anthropic Academy'
+  category: IA
+  status: concluido
+  color: '#cbcada'
+  credentialUrl: https://verify.skilljar.com/c/dk262v7fpsj2
+  image: ../../assets/certificados/cowork.jpg
+- id: capacidades
+  order: 5
+  title: 'Capacidades e Limitações da IA'
+  issuer: 'Anthropic Academy'
+  category: IA
+  status: concluido
+  color: '#cbcada'
+  credentialUrl: https://verify.skilljar.com/c/xgomspevwsy4
+  image: ../../assets/certificados/capacidades.jpg
+- id: fluencia-estudantes
+  order: 6
+  title: 'Fluência em IA para Estudantes'
+  issuer: 'Anthropic Academy'
+  category: IA
+  status: concluido
+  color: '#cbcada'
+  credentialUrl: https://verify.skilljar.com/c/dunqj4vnznuq
+  image: ../../assets/certificados/fluencia-estudantes.jpg
+- id: fluencia-k12
+  order: 7
+  title: 'Fluência em IA para Educadores da Pré-escola ao Ensino Médio'
+  issuer: 'Anthropic Academy'
+  category: IA
+  status: concluido
+  color: '#c5d3e0'
+  credentialUrl: https://verify.skilljar.com/c/5as9phfvvomz
+  image: ../../assets/certificados/fluencia-k12.jpg
+- id: mcp-intro
+  order: 8
+  title: 'Introdução ao Model Context Protocol (MCP)'
+  issuer: 'Anthropic Academy'
+  category: IA
+  status: concluido
+  color: '#bcd1ca'
+  credentialUrl: https://verify.skilljar.com/c/nnhg6ja4jb72
+  image: ../../assets/certificados/mcp-intro.jpg
+  highlight: true
+- id: vertex
+  order: 9
+  title: 'Claude no Google Cloud (Vertex AI)'
+  issuer: 'Anthropic Academy'
+  category: DevOps
+  status: concluido
+  color: '#bcd1ca'
+  credentialUrl: https://verify.skilljar.com/c/2eiig3v55gvp
+  image: ../../assets/certificados/vertex.jpg
+  highlight: true
+- id: subagentes
+  order: 10
+  title: 'Introdução aos Subagentes'
+  issuer: 'Anthropic Academy'
+  category: IA
+  status: concluido
+  color: '#bcd1ca'
+  credentialUrl: https://verify.skilljar.com/c/4k74x8tbu386
+  image: ../../assets/certificados/subagentes.jpg
+- id: fluencia-construtores
+  order: 11
+  title: 'Fluência em IA para Construtores'
+  issuer: 'Anthropic Academy'
+  category: IA
+  status: concluido
+  color: '#bcd1ca'
+  credentialUrl: https://verify.skilljar.com/c/pmr3avjasmzd
+  image: ../../assets/certificados/fluencia-construtores.jpg
+- id: fluencia-ongs
+  order: 12
+  title: 'Fluência em IA para Organizações sem Fins Lucrativos'
+  issuer: 'Anthropic Academy'
+  category: IA
+  status: concluido
+  color: '#bcd1ca'
+  credentialUrl: https://verify.skilljar.com/c/9unrky5r6sxy
+  image: ../../assets/certificados/fluencia-ongs.jpg
+- id: fluencia-educadores
+  order: 13
+  title: 'Fluência em IA para Educadores'
+  issuer: 'Anthropic Academy'
+  category: IA
+  status: concluido
+  color: '#bcd1ca'
+  credentialUrl: https://verify.skilljar.com/c/wzgniegme2iw
+  image: ../../assets/certificados/fluencia-educadores.jpg
+- id: api-claude
+  order: 14
+  title: 'Construindo com a API Claude'
+  issuer: 'Anthropic Academy'
+  category: IA
+  status: concluido
+  color: '#6b9bcc'
+  credentialUrl: https://verify.skilljar.com/c/eqs3admyt6ix
+  image: ../../assets/certificados/api-claude.jpg
+  highlight: true
+- id: agent-skills
+  order: 15
+  title: 'Introdução às Agent Skills'
+  issuer: 'Anthropic Academy'
+  category: IA
+  status: concluido
+  color: '#6b9bcc'
+  credentialUrl: https://verify.skilljar.com/c/xj8sj6acrhea
+  image: ../../assets/certificados/agent-skills.jpg
+- id: plataforma-claude-101
+  order: 16
+  title: 'Plataforma Claude 101'
+  issuer: 'Anthropic Academy'
+  category: IA
+  status: concluido
+  color: '#6b9bcc'
+  credentialUrl: https://verify.skilljar.com/c/oqg7hw2wqtv6
+  image: ../../assets/certificados/plataforma-claude-101.jpg
+- id: ensinando-fluencia
+  order: 17
+  title: 'Ensinando Fluência em IA'
+  issuer: 'Anthropic Academy'
+  category: IA
+  status: concluido
+  color: '#6b9bcc'
+  credentialUrl: https://verify.skilljar.com/c/s7eb9597acte
+  image: ../../assets/certificados/ensinando-fluencia.jpg
+- id: claude-code-in-action
+  order: 18
+  title: 'Claude Code in Action'
+  issuer: 'Anthropic Academy'
+  category: IA
+  status: concluido
+  color: '#798c5e'
+  credentialUrl: https://verify.skilljar.com/c/nh8ukjposbqs
+  image: ../../assets/certificados/claude-code-in-action.jpg
+  highlight: true
+- id: claude-code-101
+  order: 19
+  title: 'Claude Code 101'
+  issuer: 'Anthropic Academy'
+  category: IA
+  status: concluido
+  color: '#798c5e'
+  credentialUrl: https://verify.skilljar.com/c/5pe4pt3hh3xm
+  image: ../../assets/certificados/claude-code-101.jpg
+  highlight: true
+- id: bedrock
+  order: 20
+  title: 'Claude no Amazon Bedrock'
+  issuer: 'Anthropic Academy'
+  category: DevOps
+  status: concluido
+  color: '#798c5e'
+  credentialUrl: https://verify.skilljar.com/c/5r5wx88t2pxj
+  image: ../../assets/certificados/bedrock.jpg
+  highlight: true
+- id: fluencia-fundamentos
+  order: 21
+  title: 'Fluência em IA: Estrutura e Fundamentos'
+  issuer: 'Anthropic Academy'
+  category: IA
+  status: concluido
+  color: '#798c5e'
+  credentialUrl: https://verify.skilljar.com/c/7httyx873n57
+  image: ../../assets/certificados/fluencia-fundamentos.jpg
+- id: fluencia-pequenas-empresas
+  order: 22
+  title: 'Fluência em IA para Pequenas Empresas'
+  issuer: 'Anthropic Academy'
+  category: IA
+  status: concluido
+  color: '#798c5e'
+  credentialUrl: https://verify.skilljar.com/c/jdpvckhq9jp5
+  image: ../../assets/certificados/fluencia-pequenas-empresas.jpg
+- id: fluencia-criativos
+  order: 23
+  title: 'Fluência em IA para Trabalhos Criativos'
+  issuer: 'Anthropic Academy'
+  category: IA
+  status: concluido
+  color: '#798c5e'
+  credentialUrl: https://verify.skilljar.com/c/i3pvegym6b2q
+  image: ../../assets/certificados/fluencia-criativos.jpg
+- id: seguranca-ti
+  order: 24
+  title: 'Segurança em Tecnologia da Informação'
+  issuer: 'Fundação Bradesco'
+  category: Segurança
+  status: concluido
+  color: '#f4f3f1'
+  date: '2024-12'
+  hours: 12
+  image: ../../assets/certificados/seguranca-ti.jpg
+  highlight: true
+- id: bradesco-site-html-css-js
+  order: 25
+  title: 'Crie um Site Simples usando HTML, CSS e JavaScript'
+  issuer: 'Fundação Bradesco'
+  category: Frontend
+  status: concluido
+  color: '#f4f3f1'
+  date: '2024-10'
+  hours: 2
+  image: ../../assets/certificados/bradesco-site-html-css-js.jpg
+- id: banco-de-dados
+  order: 26
+  title: 'Administrando Banco de Dados'
+  issuer: 'Fundação Bradesco'
+  category: Banco
+  status: concluido
+  color: '#f4f3f1'
+  date: '2025-04'
+  hours: 15
+  image: ../../assets/certificados/banco-de-dados.jpg
+- id: ai-code-experience
+  order: 27
+  title: 'AI Code Experience'
+  issuer: 'Instituto Academia das IAs'
+  category: IA
+  status: concluido
+  color: '#5b4bc4'
+  date: '2026-04'
+  hours: 9
+  image: ../../assets/certificados/ai-code-experience.jpg
+  highlight: true
+- id: expo-lgpd-2024
+  order: 28
+  title: 'EXPO LGPD 2024 — Novas Tecnologias'
+  issuer: 'APDADOS'
+  category: Palestras
+  status: concluido
+  color: '#1fb5a6'
+  date: '2024-12'
+  hours: 8
+  image: ../../assets/certificados/expo-lgpd-2024.jpg

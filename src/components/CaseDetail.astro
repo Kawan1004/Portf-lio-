@@ -1,0 +1,475 @@
+---
+import { render } from 'astro:content';
+import Mockup from './Mockup.astro';
+import Icon from './Icon.astro';
+import type { Lang } from '@/i18n/ui';
+import { localePath, useTranslations } from '@/i18n/utils';
+import { getProjects, projectSlug, type Project } from '@/lib/projects';
+
+interface Props {
+  lang: Lang;
+  project: Project;
+}
+const { lang, project } = Astro.props;
+const t = useTranslations(lang);
+const { Content, headings } = await render(project);
+const toc = headings.filter((h) => h.depth === 2);
+const all = await getProjects(lang);
+const next = all[(all.findIndex((p) => p.id === project.id) + 1) % all.length];
+const home = localePath(lang) === '/' ? '' : localePath(lang);
+const d = project.data;
+---
+
+<article class:list={['case-page', `tone-${d.mockup}`]}>
+  <!-- Abertura: faixa na cor do case com título e ilustração -->
+  <header class="case-hero">
+    <div class="hero-grid" aria-hidden="true"></div>
+    <div class="container-page relative grid items-center gap-12 pt-10 pb-16 sm:pt-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16 lg:pb-24">
+      <div>
+        <a href={`${home}/#projetos`} class="back-link" data-reveal>
+          <Icon name="arrowRight" class="back-icon" />
+          {t('case.back')}
+        </a>
+        <p class="role-pill mt-8" data-reveal>
+          <span class="dot" aria-hidden="true"></span>
+          {d.role}
+        </p>
+        <h1 class="case-h1 mt-5" data-split>{d.title}</h1>
+        <p class="mt-6 max-w-xl text-lg leading-relaxed text-fg-muted sm:text-xl" data-reveal>{d.summary}</p>
+        <ul class="mt-8 flex flex-wrap gap-2" role="list" aria-label={t('case.stack')} data-reveal>
+          {d.stack.map((s) => <li class="stack-chip">{s}</li>)}
+        </ul>
+      </div>
+
+      <figure class="hero-visual" data-reveal>
+        <div class="hero-glow" aria-hidden="true"></div>
+        <div class="hero-mockup" data-parallax="0.08">
+          <Mockup variant={d.mockup} lang={lang} label={`${d.title}. ${t('case.mockupNote')}`} />
+        </div>
+        <figcaption class="mockup-note">{t('case.mockupNote')}</figcaption>
+      </figure>
+    </div>
+  </header>
+
+  <!-- Destaques -->
+  <div class="container-page">
+    <ul class="highlights" role="list" aria-label={t('case.highlights')} data-reveal>
+      {
+        d.highlights.map((h) => (
+          <li class="highlight" data-reveal-item>
+            <span class="check" aria-hidden="true">
+              <Icon name="check" class="size-4" />
+            </span>
+            {h}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <!-- Corpo: índice fixo + conteúdo em linha do tempo -->
+  <div class="container-page grid gap-12 py-20 sm:py-28 lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-20">
+    <nav class="toc" aria-label={t('case.toc')}>
+      <p class="text-xs font-medium tracking-wide text-fg-muted">{t('case.toc')}</p>
+      <ol class="mt-4 space-y-1" role="list">
+        {
+          toc.map((h) => (
+            <li>
+              <a href={`#${h.slug}`} class="toc-link" data-toc-link>
+                {h.text}
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+
+    <div class="case-body" data-case-body>
+      <Content />
+    </div>
+  </div>
+
+  <!-- Próximo case -->
+  {
+    next && next.id !== project.id && (
+      <div class="container-page pb-24">
+        <a href={localePath(lang, `/cases/${projectSlug(next)}`)} class:list={['next-card', `tone-${next.data.mockup}`]} data-reveal>
+          <span class="text-sm text-fg-muted">{t('case.next')}</span>
+          <span class="next-title">{next.data.title}</span>
+          <span class="next-arrow" aria-hidden="true">
+            <Icon name="arrowRight" class="size-6" />
+          </span>
+        </a>
+        <a href={`${home}/#projetos`} class="mt-6 inline-flex text-sm text-fg-muted hover:text-fg">
+          {t('case.all')}
+        </a>
+      </div>
+    )
+  }
+</article>
+
+<script>
+  // Índice: destaca a última seção cujo título já passou de 35% da altura da tela.
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]'));
+  const headings = Array.from(document.querySelectorAll<HTMLElement>('[data-case-body] h2[id]'));
+  let frame = 0;
+  const sync = () => {
+    const line = innerHeight * 0.35;
+    const active = headings.filter((h) => h.getBoundingClientRect().top <= line).at(-1) ?? headings[0];
+    links.forEach((a) => a.toggleAttribute('aria-current', decodeURIComponent(a.hash.slice(1)) === active?.id));
+    links.forEach((a) => a.hasAttribute('aria-current') && a.setAttribute('aria-current', 'true'));
+  };
+  addEventListener(
+    'scroll',
+    () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(sync);
+    },
+    { passive: true },
+  );
+  sync();
+</script>
+
+<style>
+  /* Abertura */
+  .case-hero {
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(70% 90% at 85% 30%, color-mix(in oklab, var(--tone) 18%, transparent), transparent 70%),
+      linear-gradient(to bottom, color-mix(in oklab, var(--tone) 6%, var(--bg)), var(--bg));
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(color-mix(in oklab, var(--tone) 10%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in oklab, var(--tone) 10%, transparent) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 60% 80% at 80% 40%, #000 20%, transparent 75%);
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    font-size: 0.9rem;
+    color: var(--fg-muted);
+    transition: color 0.3s;
+  }
+  .back-link:hover {
+    color: var(--fg);
+  }
+  .back-link :global(.back-icon) {
+    width: 2rem;
+    height: 2rem;
+    padding: 0.45rem;
+    rotate: 180deg;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    transition: translate 0.4s var(--ease-out-soft);
+  }
+  .back-link:hover :global(.back-icon) {
+    translate: -3px 0;
+  }
+  .role-pill {
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--tone) 12%, transparent);
+    color: color-mix(in oklab, var(--tone) 75%, var(--fg));
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  .dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 999px;
+    background: var(--tone);
+  }
+  .case-h1 {
+    font-size: clamp(2.1rem, 1.3rem + 2.6vw, 3.5rem);
+    font-weight: 600;
+    line-height: 1.02;
+    letter-spacing: -0.045em;
+  }
+  .stack-chip {
+    padding: 0.35rem 0.75rem;
+    border-radius: 0.6rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+
+  .hero-visual {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 20rem;
+  }
+  .hero-glow {
+    position: absolute;
+    width: 80%;
+    aspect-ratio: 1;
+    border-radius: 999px;
+    background: radial-gradient(closest-side, color-mix(in oklab, var(--tone) 30%, transparent), transparent);
+  }
+  .hero-mockup {
+    position: relative;
+    width: min(100%, 34rem);
+    rotate: -2.5deg;
+    filter: drop-shadow(0 40px 50px color-mix(in oklab, var(--tone) 35%, rgb(0 0 0 / 0.25)));
+  }
+  .mockup-note {
+    position: relative;
+    margin-top: 1.5rem;
+    font-size: 0.75rem;
+    color: var(--fg-muted);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-mockup {
+      animation: float 7s ease-in-out infinite;
+    }
+  }
+  @keyframes float {
+    50% {
+      translate: 0 -10px;
+    }
+  }
+
+  /* Destaques: sobrepõem levemente a faixa da abertura */
+  .highlights {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 0.75rem;
+    margin-top: -2.5rem;
+  }
+  @media (min-width: 768px) {
+    .highlights {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .highlight {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 1.25rem 1.4rem;
+    border-radius: 1.25rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: 0 25px 50px -35px rgb(0 0 0 / 0.4);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .check {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 999px;
+    background: var(--tone);
+    color: #fff;
+  }
+
+  /* Índice fixo */
+  .toc {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .toc {
+      display: block;
+      position: sticky;
+      top: 6rem;
+      align-self: start;
+    }
+  }
+  .toc-link {
+    display: block;
+    padding: 0.45rem 0.85rem;
+    border-left: 2px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--fg-muted);
+    transition:
+      color 0.3s,
+      border-color 0.3s,
+      background-color 0.3s;
+  }
+  .toc-link:hover {
+    color: var(--fg);
+  }
+  .toc-link[aria-current='true'] {
+    border-color: var(--tone);
+    color: var(--fg);
+    font-weight: 500;
+    background: linear-gradient(90deg, color-mix(in oklab, var(--tone) 10%, transparent), transparent);
+  }
+
+  /* Conteúdo em linha do tempo: cada h2 vira um marco numerado */
+  .case-body {
+    position: relative;
+    max-width: 46rem;
+    counter-reset: step;
+    padding-left: 3.5rem;
+    font-size: 1.075rem;
+    line-height: 1.75;
+    color: var(--fg-muted);
+  }
+  .case-body::before {
+    content: '';
+    position: absolute;
+    left: 1.1rem;
+    top: 0.5rem;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--tone), var(--border) 30%, var(--border));
+  }
+  .case-body :global(h2) {
+    position: relative;
+    counter-increment: step;
+    margin-top: 4.5rem;
+    margin-bottom: 1rem;
+    scroll-margin-top: 6rem;
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: var(--fg);
+  }
+  .case-body :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .case-body :global(h2)::before {
+    content: counter(step, decimal-leading-zero);
+    position: absolute;
+    left: -3.5rem;
+    top: 0.1rem;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.75rem;
+    background: var(--surface);
+    border: 1px solid color-mix(in oklab, var(--tone) 40%, var(--border));
+    color: var(--tone);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+  .case-body :global(p) {
+    margin-top: 1rem;
+  }
+  .case-body :global(strong) {
+    color: var(--fg);
+    font-weight: 600;
+  }
+  .case-body :global(ul) {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 1.25rem;
+  }
+  .case-body :global(ul > li) {
+    position: relative;
+    padding-left: 1.5rem;
+  }
+  .case-body :global(ul > li)::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.75rem;
+    width: 0.75rem;
+    height: 1px;
+    background: var(--tone);
+  }
+  /* Decisões técnicas (lista numerada) viram cards */
+  .case-body :global(ol) {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 1.5rem;
+    counter-reset: decision;
+  }
+  .case-body :global(ol > li) {
+    position: relative;
+    counter-increment: decision;
+    padding: 1.25rem 1.4rem 1.25rem 3.5rem;
+    border-radius: 1.1rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition:
+      border-color 0.3s,
+      translate 0.4s var(--ease-out-soft);
+  }
+  .case-body :global(ol > li:hover) {
+    translate: 4px 0;
+    border-color: color-mix(in oklab, var(--tone) 45%, var(--border));
+  }
+  .case-body :global(ol > li)::before {
+    content: counter(decision);
+    position: absolute;
+    left: 1.2rem;
+    top: 1.3rem;
+    display: grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--tone) 14%, transparent);
+    color: var(--tone);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  /* Próximo case */
+  .next-card {
+    position: relative;
+    display: grid;
+    gap: 0.5rem;
+    padding: 2.5rem 6rem 2.5rem 2.25rem;
+    overflow: hidden;
+    border-radius: 2rem;
+    border: 1px solid var(--border);
+    background:
+      radial-gradient(80% 120% at 100% 50%, color-mix(in oklab, var(--tone) 18%, transparent), transparent 65%),
+      var(--surface);
+    transition:
+      border-color 0.3s,
+      box-shadow 0.5s var(--ease-out-soft);
+  }
+  .next-card:hover {
+    border-color: color-mix(in oklab, var(--tone) 45%, var(--border));
+    box-shadow: 0 40px 70px -45px color-mix(in oklab, var(--tone) 70%, rgb(0 0 0 / 0.4));
+  }
+  .next-title {
+    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.5rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+  }
+  .next-arrow {
+    position: absolute;
+    right: 2rem;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    translate: 0 -50%;
+    border-radius: 999px;
+    background: var(--fg);
+    color: var(--bg);
+    transition: rotate 0.5s var(--ease-out-soft);
+  }
+  .next-card:hover .next-arrow {
+    rotate: -45deg;
+  }
+  .next-card:focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 4px;
+  }
+</style>

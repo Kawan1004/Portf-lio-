@@ -1,0 +1,48 @@
+- id: queries
+  order: 1
+  title:
+    pt: 'Consultas parametrizadas'
+    en: 'Parameterized queries'
+  detail:
+    pt: 'Nenhuma concatenação de input em SQL; allowlist para colunas e ordenação.'
+    en: 'No user input concatenated into SQL; allowlists for columns and sorting.'
+- id: web
+  order: 2
+  title:
+    pt: 'XSS, CSRF e SSRF'
+    en: 'XSS, CSRF and SSRF'
+  detail:
+    pt: 'Escape por padrão, CSP restritiva, tokens anti-CSRF e validação de destino em chamadas de saída.'
+    en: 'Escaping by default, strict CSP, anti-CSRF tokens and destination validation on outbound calls.'
+- id: auth
+  order: 3
+  title:
+    pt: 'Senhas e sessões'
+    en: 'Passwords and sessions'
+  detail:
+    pt: 'Hash com bcrypt/argon2, tokens com expiração e RBAC verificado no servidor.'
+    en: 'bcrypt/argon2 hashing, expiring tokens and server-side RBAC checks.'
+- id: abuse
+  order: 4
+  title:
+    pt: 'Rate limiting e auditoria'
+    en: 'Rate limiting and audit trails'
+  detail:
+    pt: 'Limites por IP e por usuário; trilhas de auditoria imutáveis para ações sensíveis.'
+    en: 'Per-IP and per-user limits; immutable audit trails for sensitive actions.'
+- id: crypto
+  order: 5
+  title:
+    pt: 'Criptografia de dados sensíveis'
+    en: 'Encryption of sensitive data'
+  detail:
+    pt: 'AES-256-GCM em repouso para credenciais e dados de saúde; chaves fora do código.'
+    en: 'AES-256-GCM at rest for credentials and health data; keys kept out of the codebase.'
+- id: lgpd
+  order: 6
+  title:
+    pt: 'LGPD by design'
+    en: 'Privacy by design (LGPD)'
+  detail:
+    pt: 'Minimização, consentimento explícito, k-anonimato em relatórios e retenção definida.'
+    en: 'Data minimization, explicit consent, k-anonymity in reports and defined retention.'

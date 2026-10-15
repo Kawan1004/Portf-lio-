@@ -1,0 +1,42 @@
+name: Security & build
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Gitleaks (varredura de segredos)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  audit-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: npm audit (dependências de produção)
+        run: npm audit --omit=dev --audit-level=high
+      - name: Type check e build
+        run: npm run build
+        env:
+          # Valores fictícios: o build valida o schema do astro:env, mas não chama serviços externos.
+          RESEND_API_KEY: ci-placeholder
+          CONTACT_TO_EMAIL: ci@example.com
+          CONTACT_FROM_EMAIL: ci@example.com
+          TURNSTILE_SECRET_KEY: 1x0000000000000000000000000000000AA
+          PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA

@@ -1,0 +1,144 @@
+---
+import Icon from './Icon.astro';
+import { about } from '@/i18n/about';
+import type { Lang } from '@/i18n/ui';
+import { localePath } from '@/i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = about[lang];
+const base = localePath(lang) === '/' ? '' : localePath(lang);
+---
+
+<section id="sobre" aria-labelledby="sobre-title" class="scroll-mt-16">
+  <div class="container-page grid items-center gap-14 py-24 sm:py-32 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-20">
+    <!-- Narrativa -->
+    <div>
+      <p class="flex items-center gap-3 text-sm text-fg-muted" data-reveal>
+        <span class="h-px w-8 bg-accent" aria-hidden="true"></span>
+        {c.kicker}
+      </p>
+      <h2 id="sobre-title" class="about-title mt-6" data-split>
+        <span class="font-light text-fg-muted">{c.title}</span>
+        <span class="block font-semibold">{c.titleAccent}</span>
+      </h2>
+      <div class="mt-8 max-w-xl space-y-5 text-lg leading-relaxed text-fg-muted" data-reveal>
+        {c.paragraphs.map((p, i) => <p class:list={[i === 0 && 'text-fg']}>{p}</p>)}
+      </div>
+    </div>
+
+    <!-- Diferencial: engenharia com IA -->
+    <aside class="ai-panel" data-theme="dark" aria-labelledby="ai-title" data-reveal>
+      <div class="ai-glow" aria-hidden="true"></div>
+      <div class="relative">
+        <p id="ai-title" class="flex items-center gap-2 text-sm text-fg-muted">
+          <Icon name="spark" class="size-4 text-accent" />
+          {c.aiTitle}
+        </p>
+        <p class="mt-5 text-2xl leading-tight font-semibold text-balance sm:text-3xl">{c.aiLead}</p>
+
+        <ol class="ai-flow mt-8" role="list">
+          {
+            c.aiFlow.map((step, i) => (
+              <li class:list={['ai-step', i === 3 && 'is-human']}>
+                <span class="ai-dot" aria-hidden="true" />
+                {step}
+              </li>
+            ))
+          }
+        </ol>
+
+        <ul class="mt-8 flex flex-wrap gap-2 border-t border-border pt-6" role="list">
+          {c.aiTools.map((tool) => <li class="ai-tool">{tool}</li>)}
+        </ul>
+
+        <a href={`${base}/#certificacoes`} class="mt-7 inline-flex items-center gap-2 text-sm font-medium text-accent hover:underline">
+          {c.aiLink}
+          <Icon name="arrowRight" class="size-4" />
+        </a>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .about-title {
+    font-size: clamp(2.6rem, 1.4rem + 4vw, 5rem);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+  }
+
+  .ai-panel {
+    position: relative;
+    overflow: hidden;
+    padding: 2rem;
+    border-radius: 2rem;
+    background: #0b0c10;
+    color: var(--fg);
+    box-shadow: 0 40px 80px -40px rgb(0 0 0 / 0.55);
+  }
+  @media (min-width: 1024px) {
+    .ai-panel {
+      padding: 2.75rem;
+    }
+  }
+  .ai-glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(60% 70% at 90% 0%, rgb(34 211 238 / 0.18), transparent 70%),
+      radial-gradient(50% 60% at 0% 100%, rgb(129 140 248 / 0.12), transparent 70%);
+  }
+
+  /* Fluxo em linha do tempo vertical: a etapa humana ganha destaque. */
+  .ai-flow {
+    position: relative;
+    display: grid;
+    gap: 0.9rem;
+  }
+  .ai-flow::before {
+    content: '';
+    position: absolute;
+    left: 0.31rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--border-strong), var(--accent));
+  }
+  .ai-step {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.95rem;
+    color: var(--fg-muted);
+  }
+  .ai-dot {
+    position: relative;
+    z-index: 1;
+    width: 0.65rem;
+    height: 0.65rem;
+    flex-shrink: 0;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: #0b0c10;
+  }
+  .ai-step.is-human {
+    color: var(--fg);
+    font-weight: 600;
+  }
+  .ai-step.is-human .ai-dot {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: 0 0 14px var(--accent);
+  }
+  .ai-tool {
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    font-size: 0.78rem;
+    color: var(--fg-muted);
+  }
+</style>

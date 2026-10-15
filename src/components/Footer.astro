@@ -1,0 +1,22 @@
+---
+import { site } from '@/config/site';
+import type { Lang } from '@/i18n/ui';
+import { localePath, useTranslations } from '@/i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-border">
+  <div class="container-page flex flex-col gap-4 py-10 text-sm text-fg-muted sm:flex-row sm:items-center sm:justify-between">
+    <p>© {year} {site.name}. {t('footer.rights')}</p>
+    <ul class="flex gap-5">
+      <li><a class="hover:text-fg" href={localePath(lang, '/privacidade')}>{t('footer.privacy')}</a></li>
+      <li><a class="hover:text-fg" href={`mailto:${site.email}`}>{site.email}</a></li>
+    </ul>
+  </div>
+</footer>

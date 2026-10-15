@@ -1,0 +1,22 @@
+---
+interface Props {
+  as?: 'div' | 'article' | 'li';
+  glow?: boolean;
+  interactive?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+const { as: Tag = 'div', glow = false, interactive = false, class: className, ...rest } = Astro.props;
+---
+
+<Tag
+  class:list={[
+    'relative rounded-3xl border border-border bg-surface-glass glass p-6 sm:p-8',
+    interactive && 'transition-[transform,border-color] duration-500 ease-(--ease-out-soft) hover:-translate-y-1 hover:border-border-strong',
+    glow && 'gradient-border',
+    className,
+  ]}
+  {...rest}
+>
+  <slot />
+</Tag>

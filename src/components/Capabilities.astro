@@ -1,0 +1,487 @@
+---
+import { getCollection } from 'astro:content';
+import Section from './Section.astro';
+import Icon from './Icon.astro';
+import { about } from '@/i18n/about';
+import type { Lang } from '@/i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = about[lang];
+
+// Todas as tecnologias da coleção de skills, sem repetição, numa faixa contínua.
+const tech = [...new Set((await getCollection('skills')).sort((a, b) => a.data.order - b.data.order).flatMap((s) => s.data.items))];
+
+// Ilustração e estilo de cada card do bento (ordem segue about.capabilities).
+const looks = [
+  { art: 'arch', dark: true, span: 'is-wide' },
+  { art: 'data', dark: false, span: 'is-narrow' },
+  { art: 'security', dark: false, span: 'is-narrow' },
+  { art: 'mobile', dark: true, span: 'is-wide' },
+] as const;
+---
+
+<Section id="stack" title={c.capabilitiesTitle} lead={c.capabilitiesLead}>
+  <ul class="bento" role="list">
+    {
+      c.capabilities.map((cap, i) => {
+        const look = looks[i] ?? looks[0];
+        return (
+          <li class:list={['tile', look.span, look.dark && 'is-dark']} data-theme={look.dark ? 'dark' : undefined} data-reveal data-spotlight>
+            <div class:list={['art', `art-${look.art}`]} aria-hidden="true">
+              {look.art === 'arch' && (
+                <svg viewBox="0 0 320 150" fill="none">
+                  <path class="flow" d="M60 30 C 110 30, 120 75, 160 75" />
+                  <path class="flow" d="M60 75 H 160" />
+                  <path class="flow" d="M60 120 C 110 120, 120 75, 160 75" />
+                  <path class="flow is-out" d="M160 75 H 260" />
+                  {[30, 75, 120].map((y, k) => (
+                    <g>
+                      <rect x="14" y={y - 14} width="46" height="28" rx="8" class="node" />
+                      <text x="37" y={y + 4} class="node-label">{`T${k + 1}`}</text>
+                    </g>
+                  ))}
+                  <rect x="150" y="50" width="56" height="50" rx="14" class="core" />
+                  <circle cx="178" cy="75" r="6" class="core-dot" />
+                  <rect x="258" y="58" width="48" height="34" rx="10" class="node" />
+                  <text x="282" y="80" class="node-label">API</text>
+                </svg>
+              )}
+              {look.art === 'data' && (
+                <svg viewBox="0 0 320 150" fill="none">
+                  {[70, 250].map((x) => (
+                    <g class="db">
+                      <ellipse cx={x} cy="40" rx="38" ry="12" />
+                      <path d={`M${x - 38} 40 V108 C ${x - 38} 124, ${x + 38} 124, ${x + 38} 108 V40`} />
+                      <path d={`M${x - 38} 74 C ${x - 38} 90, ${x + 38} 90, ${x + 38} 74`} />
+                    </g>
+                  ))}
+                  <path class="lane" d="M118 62 H 202" />
+                  <path class="lane" d="M202 92 H 118" />
+                  <circle r="5" class="packet is-a" cx="118" cy="62" />
+                  <circle r="5" class="packet is-b" cx="202" cy="92" />
+                </svg>
+              )}
+              {look.art === 'security' && (
+                <svg viewBox="0 0 320 150" fill="none">
+                  <path class="shield" d="M160 14 L210 32 V72 C210 104 188 126 160 138 C132 126 110 104 110 72 V32 Z" />
+                  <path class="check" d="M140 76 L155 91 L182 62" />
+                  <rect class="scan" x="106" y="20" width="108" height="3" rx="1.5" />
+                  {[
+                    [40, 40, 'RBAC'],
+                    [40, 110, 'AES'],
+                    [280, 40, 'CSP'],
+                    [280, 110, 'LGPD'],
+                  ].map(([x, y, label]) => (
+                    <g class="badge">
+                      <rect x={Number(x) - 26} y={Number(y) - 13} width="52" height="26" rx="13" />
+                      <text x={x} y={Number(y) + 4}>{label}</text>
+                    </g>
+                  ))}
+                </svg>
+              )}
+              {look.art === 'mobile' && (
+                <svg viewBox="0 0 320 150" fill="none">
+                  <rect x="30" y="10" width="70" height="130" rx="14" class="phone" />
+                  <rect x="54" y="18" width="22" height="4" rx="2" class="phone-notch" />
+                  <rect x="42" y="34" width="46" height="8" rx="4" class="ui-line" />
+                  <rect x="42" y="50" width="34" height="8" rx="4" class="ui-line" />
+                  <rect x="42" y="72" width="46" height="40" rx="8" class="ui-card" />
+                  {['Build', 'Review', 'Store'].map((label, k) => (
+                    <g>
+                      <rect x="130" y={22 + k * 40} width="160" height="28" rx="14" class="step" />
+                      <rect x="130" y={22 + k * 40} width="160" height="28" rx="14" class:list={['step-fill', `is-${k}`]} />
+                      <text x="150" y={40 + k * 40} class="step-label" text-anchor="start">{label}</text>
+                    </g>
+                  ))}
+                </svg>
+              )}
+            </div>
+
+            <div class="tile-body">
+              <div class="flex items-center gap-3">
+                <span class="tile-icon">
+                  <Icon name={cap.icon} class="size-4" />
+                </span>
+                <h3 class="text-xl font-semibold tracking-tight sm:text-2xl">{cap.title}</h3>
+              </div>
+              <p class="mt-3 text-fg-muted">{cap.summary}</p>
+              <ul class="mt-5 space-y-2 text-sm" role="list">
+                {cap.points.map((pt) => (
+                  <li class="tile-point">{pt}</li>
+                ))}
+              </ul>
+              <ul class="mt-6 flex flex-wrap gap-1.5" role="list">
+                {cap.tech.map((t) => (
+                  <li class="tile-chip">{t}</li>
+                ))}
+              </ul>
+            </div>
+          </li>
+        );
+      })
+    }
+  </ul>
+
+  <!-- Faixa de tecnologias: a primeira cópia é lida por leitores de tela; a duplicata é decorativa. -->
+  <div class="ticker" data-reveal>
+    <div class="ticker-move">
+      <ul class="ticker-track" role="list" aria-label={c.capabilitiesTitle}>
+        {tech.map((name) => <li>{name}</li>)}
+      </ul>
+      <ul class="ticker-track" aria-hidden="true">
+        {tech.map((name) => <li>{name}</li>)}
+      </ul>
+    </div>
+  </div>
+</Section>
+
+<script>
+  // Spotlight que segue o cursor dentro de cada card (só com mouse).
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.querySelectorAll<HTMLElement>('[data-spotlight]').forEach((tile) => {
+      tile.addEventListener('pointermove', (e) => {
+        const r = tile.getBoundingClientRect();
+        tile.style.setProperty('--sx', `${e.clientX - r.left}px`);
+        tile.style.setProperty('--sy', `${e.clientY - r.top}px`);
+      });
+    });
+  }
+</script>
+
+<style>
+  /* Bento assimétrico: 7/5 e 5/7 no desktop, duas colunas no tablet, uma no celular. */
+  .bento {
+    display: grid;
+    gap: 1rem;
+  }
+  @media (min-width: 768px) {
+    .bento {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1024px) {
+    .bento {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+    .tile.is-wide {
+      grid-column: span 7;
+    }
+    .tile.is-narrow {
+      grid-column: span 5;
+    }
+  }
+
+  .tile {
+    --sx: 50%;
+    --sy: 0%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 1.75rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: 0 30px 60px -45px rgb(0 0 0 / 0.35);
+    transition:
+      translate 0.5s var(--ease-out-soft),
+      box-shadow 0.5s var(--ease-out-soft),
+      border-color 0.4s;
+  }
+  .tile.is-dark {
+    background: #0c0d11;
+    color: var(--fg);
+  }
+  /* Spotlight: brilho suave sob o cursor. */
+  .tile::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(22rem circle at var(--sx) var(--sy), var(--accent-soft), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .tile:hover {
+    translate: 0 -4px;
+    border-color: color-mix(in oklab, var(--accent) 40%, var(--border));
+    box-shadow: 0 40px 70px -40px rgb(0 0 0 / 0.45);
+  }
+  .tile:hover::before {
+    opacity: 1;
+  }
+
+  .art {
+    position: relative;
+    height: 11rem;
+    padding: 1.25rem 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+    background:
+      radial-gradient(70% 90% at 50% 100%, var(--accent-soft), transparent 70%),
+      linear-gradient(var(--border) 1px, transparent 1px) 0 0 / 100% 22px;
+    mask-image: linear-gradient(to bottom, #000 70%, transparent);
+  }
+  .art svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .tile-body {
+    position: relative;
+    padding: 1.75rem;
+  }
+  @media (min-width: 1024px) {
+    .tile-body {
+      padding: 2rem 2.25rem 2.25rem;
+    }
+  }
+  .tile-icon {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.7rem;
+    background: var(--fg);
+    color: var(--bg);
+  }
+  .tile-point {
+    display: flex;
+    gap: 0.6rem;
+  }
+  .tile-point::before {
+    content: '';
+    flex-shrink: 0;
+    width: 0.375rem;
+    height: 0.375rem;
+    margin-top: 0.5rem;
+    border-radius: 999px;
+    background: var(--accent);
+  }
+  .tile-chip {
+    padding: 0.25rem 0.6rem;
+    border-radius: 0.45rem;
+    border: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--fg-muted);
+  }
+
+  /* --- Ilustrações (traço fino, cor do acento; animações só com movimento permitido) --- */
+  .art :global(text) {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    fill: var(--fg-muted);
+  }
+  .art :global(text:not([text-anchor])) {
+    text-anchor: middle;
+  }
+  .node,
+  .phone,
+  .step,
+  .db :global(*),
+  .badge rect {
+    stroke: var(--border-strong);
+    stroke-width: 1.2;
+    fill: var(--surface);
+  }
+  .tile.is-dark .node,
+  .tile.is-dark .phone,
+  .tile.is-dark .step {
+    fill: #14161c;
+  }
+  .flow,
+  .lane {
+    stroke: var(--accent);
+    stroke-width: 1.4;
+    stroke-dasharray: 4 6;
+    opacity: 0.8;
+  }
+  .core {
+    fill: var(--accent);
+    opacity: 0.18;
+    stroke: var(--accent);
+  }
+  .core-dot,
+  .packet {
+    fill: var(--accent);
+  }
+  .shield {
+    stroke: var(--fg-muted);
+    stroke-width: 1.4;
+    fill: var(--accent-soft);
+  }
+  .check {
+    stroke: var(--accent);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 60;
+  }
+  .scan {
+    fill: var(--accent);
+    opacity: 0.55;
+  }
+  .phone-notch,
+  .ui-line {
+    fill: var(--border-strong);
+  }
+  .ui-card {
+    fill: var(--accent-soft);
+    stroke: var(--accent);
+    stroke-width: 1;
+  }
+  .step-fill {
+    fill: var(--accent);
+    opacity: 0.22;
+    transform-box: fill-box;
+    transform-origin: left center;
+  }
+  .step-label {
+    text-anchor: start;
+    fill: var(--fg);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .flow,
+    .lane {
+      animation: dash 1.6s linear infinite;
+    }
+    .flow.is-out {
+      animation-duration: 1s;
+    }
+    .core-dot {
+      animation: pulse 2s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+    .packet.is-a {
+      animation: travel-right 2.4s ease-in-out infinite;
+    }
+    .packet.is-b {
+      animation: travel-left 2.4s ease-in-out infinite 1.2s;
+    }
+    .scan {
+      animation: scan 2.8s ease-in-out infinite;
+    }
+    .check {
+      animation: draw 2.8s ease-in-out infinite;
+    }
+    .step-fill {
+      animation: fill 4.5s ease-in-out infinite;
+    }
+    .step-fill.is-1 {
+      animation-delay: 0.5s;
+    }
+    .step-fill.is-2 {
+      animation-delay: 1s;
+    }
+    .tile:hover .art svg {
+      animation-play-state: running;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .step-fill {
+      transform: scaleX(1);
+    }
+  }
+  @keyframes dash {
+    to {
+      stroke-dashoffset: -20;
+    }
+  }
+  @keyframes pulse {
+    50% {
+      transform: scale(1.6);
+      opacity: 0.6;
+    }
+  }
+  @keyframes travel-right {
+    0% { transform: translateX(0); opacity: 0; }
+    15%, 85% { opacity: 1; }
+    100% { transform: translateX(84px); opacity: 0; }
+  }
+  @keyframes travel-left {
+    0% { transform: translateX(0); opacity: 0; }
+    15%, 85% { opacity: 1; }
+    100% { transform: translateX(-84px); opacity: 0; }
+  }
+  @keyframes scan {
+    0%, 100% { transform: translateY(0); opacity: 0; }
+    15%, 85% { opacity: 0.6; }
+    50% { transform: translateY(110px); }
+  }
+  @keyframes draw {
+    0%, 25% { stroke-dashoffset: 60; }
+    55%, 100% { stroke-dashoffset: 0; }
+  }
+  @keyframes fill {
+    0% { transform: scaleX(0); }
+    40%, 80% { transform: scaleX(1); }
+    100% { transform: scaleX(1); opacity: 0; }
+  }
+
+  /* Faixa de tecnologias: discreta, pausa no hover/foco, estática com movimento reduzido. */
+  .ticker {
+    margin-top: 3.5rem;
+    overflow: hidden;
+    padding-block: 1.25rem;
+    border-block: 1px solid var(--border);
+    mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+  }
+  .ticker-move {
+    display: flex;
+    width: max-content;
+    animation: ticker 60s linear infinite;
+  }
+  .ticker:hover .ticker-move,
+  .ticker:focus-within .ticker-move {
+    animation-play-state: paused;
+  }
+  .ticker-track {
+    display: flex;
+    gap: 2.5rem;
+    padding-right: 2.5rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--fg-muted);
+    white-space: nowrap;
+  }
+  .ticker-track li {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+  }
+  .ticker-track li::after {
+    content: '';
+    width: 0.3rem;
+    height: 0.3rem;
+    border-radius: 999px;
+    background: var(--accent);
+    opacity: 0.6;
+  }
+  @keyframes ticker {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ticker {
+      mask-image: none;
+    }
+    .ticker-move {
+      width: auto;
+      animation: none;
+    }
+    .ticker-track {
+      flex-wrap: wrap;
+      row-gap: 0.75rem;
+      white-space: normal;
+    }
+    .ticker-track[aria-hidden='true'] {
+      display: none;
+    }
+  }
+</style>

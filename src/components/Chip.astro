@@ -1,0 +1,25 @@
+---
+interface Props {
+  pressed?: boolean;
+  interactive?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+const { pressed, interactive = false, class: className, ...rest } = Astro.props;
+const Tag = interactive ? 'button' : 'span';
+---
+
+<Tag
+  type={interactive ? 'button' : undefined}
+  aria-pressed={interactive ? (pressed ? 'true' : 'false') : undefined}
+  class:list={[
+    'inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm whitespace-nowrap',
+    'border-border bg-surface-glass text-fg-muted',
+    interactive &&
+      'min-h-11 cursor-pointer transition-[color,background-color,border-color,transform] duration-300 hover:border-border-strong hover:text-fg active:scale-95 aria-pressed:border-accent aria-pressed:bg-accent-soft aria-pressed:text-fg',
+    className,
+  ]}
+  {...rest}
+>
+  <slot />
+</Tag>

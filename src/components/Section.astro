@@ -1,0 +1,18 @@
+---
+import SectionHeader from './SectionHeader.astro';
+
+interface Props {
+  id: string;
+  title: string;
+  lead?: string;
+  align?: 'left' | 'center';
+}
+const { id, title, lead, align } = Astro.props;
+---
+
+<section id={id} aria-labelledby={`${id}-title`} class="scroll-mt-16">
+  <div class="container-page py-24 sm:py-32">
+    <SectionHeader id={id} title={title} lead={lead} align={align} />
+    <slot />
+  </div>
+</section>

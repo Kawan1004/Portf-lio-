@@ -1,0 +1,301 @@
+---
+import Section from './Section.astro';
+import Mockup from './Mockup.astro';
+import Icon from './Icon.astro';
+import type { Lang } from '@/i18n/ui';
+import { localePath, useTranslations } from '@/i18n/utils';
+import { getProjects, projectSlug } from '@/lib/projects';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const projects = await getProjects(lang);
+---
+
+<Section id="projetos" title={t('section.projects')} lead={t('projects.lead')}>
+  <!-- Ao rolar, o case atual se afasta (zoom de saída) e o próximo se aproxima (zoom de entrada) — desktop. -->
+  <ul class="cases" role="list">
+    {
+      projects.map((p) => {
+        const slug = projectSlug(p);
+        const href = localePath(lang, `/cases/${slug}`);
+        return (
+          <li class:list={['case', `tone-${p.data.mockup}`]} data-case-card>
+            <article class="case-inner" aria-labelledby={`case-${slug}`}>
+              <div class="case-text">
+                <p class="case-role">
+                  <span class="case-dot" aria-hidden="true" />
+                  {p.data.role}
+                </p>
+                <h3 id={`case-${slug}`} class="case-title">
+                  {/* Link "esticado": o card inteiro é clicável com um único destino de foco. */}
+                  <a href={href} class="case-link">
+                    {p.data.title}
+                  </a>
+                </h3>
+                <p class="case-summary">{p.data.summary}</p>
+                <ul class="case-highlights" role="list">
+                  {p.data.highlights.map((h) => (
+                    <li>
+                      <svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="m5 12 4.5 4.5L19 7" />
+                      </svg>
+                      {h}
+                    </li>
+                  ))}
+                </ul>
+                <div class="case-footer">
+                  <ul class="flex flex-wrap gap-1.5" role="list">
+                    {p.data.stack.slice(0, 4).map((s) => (
+                      <li class="case-chip">{s}</li>
+                    ))}
+                  </ul>
+                  <span class="case-cta" aria-hidden="true">
+                    {t('projects.read')}
+                    <Icon name="arrowRight" class="case-cta-icon" />
+                  </span>
+                </div>
+              </div>
+
+              <div class="case-visual" aria-hidden="true">
+                <div class="case-grid" />
+                <div class="case-glow" />
+                <div class="case-mockup">
+                  <Mockup variant={p.data.mockup} lang={lang} label={`${p.data.title}. ${t('case.mockupNote')}`} />
+                </div>
+                <span class="case-badge">{p.data.stack[0]}</span>
+              </div>
+            </article>
+          </li>
+        );
+      })
+    }
+  </ul>
+</Section>
+
+<style>
+  .cases {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .cases {
+      gap: 3rem;
+    }
+  }
+
+  .case-inner {
+    position: relative;
+    display: grid;
+    overflow: hidden;
+    border-radius: 2rem;
+    border: 1px solid color-mix(in oklab, var(--tone) 18%, var(--border));
+    background:
+      radial-gradient(120% 90% at 100% 0%, color-mix(in oklab, var(--tone) 14%, transparent), transparent 60%),
+      var(--surface);
+    box-shadow:
+      0 1px 0 0 rgb(255 255 255 / 0.6) inset,
+      0 40px 80px -50px color-mix(in oklab, var(--tone) 60%, rgb(0 0 0 / 0.5));
+    transition:
+      border-color 0.4s,
+      box-shadow 0.5s var(--ease-out-soft);
+  }
+  @media (min-width: 1024px) {
+    .case-inner {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+      min-height: 30rem;
+    }
+  }
+  .case-inner:hover,
+  .case-inner:focus-within {
+    border-color: color-mix(in oklab, var(--tone) 45%, var(--border));
+    box-shadow:
+      0 1px 0 0 rgb(255 255 255 / 0.6) inset,
+      0 50px 90px -45px color-mix(in oklab, var(--tone) 70%, rgb(0 0 0 / 0.5));
+  }
+
+  /* Texto */
+  .case-text {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+  }
+  @media (min-width: 1024px) {
+    .case-text {
+      padding: 3rem;
+    }
+  }
+  .case-role {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--tone) 10%, transparent);
+    color: color-mix(in oklab, var(--tone) 75%, var(--fg));
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  .case-dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 999px;
+    background: var(--tone);
+  }
+  .case-title {
+    margin-top: 1.25rem;
+    font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.25rem);
+    line-height: 1.1;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+  .case-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: 2rem;
+  }
+  .case-link:focus-visible {
+    outline: none;
+  }
+  .case-link:focus-visible::after {
+    outline: 3px solid var(--ring);
+    outline-offset: -3px;
+  }
+  .case-summary {
+    margin-top: 1rem;
+    max-width: 34rem;
+    color: var(--fg-muted);
+    line-height: 1.6;
+  }
+  .case-highlights {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+    font-size: 0.92rem;
+  }
+  .case-highlights li {
+    display: flex;
+    gap: 0.6rem;
+  }
+  .case-highlights svg {
+    margin-top: 0.15rem;
+    color: var(--tone);
+  }
+  .case-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: auto;
+    padding-top: 2rem;
+  }
+  .case-chip {
+    padding: 0.25rem 0.6rem;
+    border-radius: 0.45rem;
+    background: var(--surface-muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+  }
+  .case-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.6rem 0.6rem 1.1rem;
+    border-radius: 999px;
+    background: var(--fg);
+    color: var(--bg);
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  .case-cta :global(.case-cta-icon) {
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0.35rem;
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--fg);
+    transition: rotate 0.5s var(--ease-out-soft);
+  }
+  .case-inner:hover :global(.case-cta-icon),
+  .case-inner:focus-within :global(.case-cta-icon) {
+    rotate: -45deg;
+  }
+
+  /* Ilustração: grade técnica, brilho na cor do case e o mockup flutuando. */
+  .case-visual {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 18rem;
+    padding: 2rem 1.5rem;
+    overflow: hidden;
+    background: color-mix(in oklab, var(--tone) 9%, var(--bg));
+  }
+  @media (min-width: 1024px) {
+    .case-visual {
+      margin: 0.75rem;
+      border-radius: 1.5rem;
+      padding: 3rem;
+    }
+  }
+  .case-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(color-mix(in oklab, var(--tone) 14%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in oklab, var(--tone) 14%, transparent) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, #000 30%, transparent 80%);
+  }
+  .case-glow {
+    position: absolute;
+    width: 70%;
+    aspect-ratio: 1;
+    border-radius: 999px;
+    background: radial-gradient(closest-side, color-mix(in oklab, var(--tone) 35%, transparent), transparent);
+  }
+  .case-mockup {
+    position: relative;
+    width: min(100%, 30rem);
+    rotate: -2deg;
+    filter: drop-shadow(0 30px 40px color-mix(in oklab, var(--tone) 35%, rgb(0 0 0 / 0.25)));
+    transition:
+      rotate 0.7s var(--ease-out-soft),
+      scale 0.7s var(--ease-out-soft);
+  }
+  .case-inner:hover .case-mockup {
+    rotate: 0deg;
+    scale: 1.03;
+  }
+  .case-badge {
+    position: absolute;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: 999px;
+    background: var(--surface);
+    box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.25);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .case-mockup {
+      animation: case-float 7s ease-in-out infinite;
+    }
+    .case-badge {
+      animation: case-float 7s ease-in-out infinite reverse;
+    }
+  }
+  @keyframes case-float {
+    50% {
+      translate: 0 -8px;
+    }
+  }
+</style>

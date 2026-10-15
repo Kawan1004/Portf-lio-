@@ -1,0 +1,14 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  lead?: string | undefined;
+  align?: 'left' | 'center' | undefined;
+}
+const { id, title, lead, align = 'left' } = Astro.props;
+---
+
+<header class:list={['mb-12 max-w-3xl sm:mb-16', align === 'center' && 'mx-auto text-center']}>
+  <h2 id={`${id}-title`} class="text-title font-semibold" data-split>{title}</h2>
+  {lead && <p class="mt-5 text-lg text-fg-muted sm:text-xl" data-reveal>{lead}</p>}
+</header>
