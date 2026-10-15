@@ -27,17 +27,17 @@ async function verifyTurnstile(token: string, ip: string, secret: string): Promi
   return data.success === true;
 }
 
-async function sendEmail(input: { name: string; email: string; message: string }): Promise<boolean> {
+async function sendEmail(input: { name: string; email: string; message: string }, key: string, from: string, to: string): Promise<boolean> {
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
-      authorization: `Bearer ${RESEND_API_KEY}`,
+      authorization: `Bearer ${key}`,
       'content-type': 'application/json',
     },
     // Só texto puro: nenhum conteúdo do usuário é interpretado como HTML.
     body: JSON.stringify({
-      from: CONTACT_FROM_EMAIL,
-      to: [CONTACT_TO_EMAIL],
+      from,
+      to: [to],
       reply_to: input.email,
       subject: `Portfólio · contato de ${input.name.replace(/[\r\n]+/g, ' ')}`,
       text: `Nome: ${input.name}\nE-mail: ${input.email}\n\n${input.message}`,
@@ -48,6 +48,7 @@ async function sendEmail(input: { name: string; email: string; message: string }
 }
 
 export const POST: APIRoute = async ({ request, clientAddress, url }) => {
+  if (!RESEND_API_KEY || !CONTACT_TO_EMAIL || !CONTACT_FROM_EMAIL || !TURNSTILE_SECRET_KEY) return fail(503);
   const origin = request.headers.get('origin');
   if (origin !== url.origin) return fail(403);
   if (!request.headers.get('content-type')?.includes('application/json')) return fail(415);
@@ -74,7 +75,7 @@ export const POST: APIRoute = async ({ request, clientAddress, url }) => {
 
   try {
     if (!(await verifyTurnstile(turnstileToken, ip, TURNSTILE_SECRET_KEY))) return fail(400);
-    if (!(await sendEmail(data))) {
+    if (!(await sendEmail(data, RESEND_API_KEY, CONTACT_FROM_EMAIL, CONTACT_TO_EMAIL))) {
       console.error('[contact] falha no envio via Resend');
       return fail(502);
     }
